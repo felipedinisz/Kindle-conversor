@@ -1,40 +1,47 @@
-# Kindle Converter CLI Tool
+# 📚 Kindle Converter CLI Tool
 
-A command-line tool built to convert PDF files into Kindle-compatible formats (AZW3 or EPUB), and send them to your Kindle either via USB or email. Ideal for users who want a smooth and organized document library on their Kindle devices.
-
----
-
-## 📚 Why This Tool?
-
-After receiving a new Kindle, I noticed that many of my personal documents were unformatted, without covers, and in unsupported formats. Sending via USB was also problematic due to changes in how newer Kindle models mount drives.
-
-This tool solves those problems:
-
-* Converts PDFs to EPUB or AZW3 with custom metadata and cover.
-* Automatically detects your Kindle for USB delivery.
-* Supports sending EPUB files directly to your Kindle via email.
+A command-line tool designed to convert PDF files into Kindle-compatible formats (AZW3 or EPUB), and send them to your Kindle via USB or email. Perfect for users who want a smooth, customized document library on their Kindle devices.
 
 ---
 
-## 🔧 Features
+## ❓ Why This Tool?
 
-* Convert PDFs to AZW3 or EPUB using Calibre's `ebook-convert`
+When I received my Kindle, I noticed many personal PDFs were poorly formatted, lacked metadata or covers, and some wouldn’t transfer properly via USB due to recent Kindle updates.
+
+This tool solves that:
+
+* Converts PDFs to EPUB or AZW3 with custom metadata and covers
+* Automatically detects your Kindle for USB delivery
+* Supports EPUB email delivery for seamless wireless transfer
+
+---
+
+## ⚙️ Features
+
+* Convert PDFs to AZW3 or EPUB using Calibre’s `ebook-convert`
 * Add custom title, author, and cover image
-* Automatically log all conversions
+* Automatically logs all conversions
 * Send files to Kindle:
 
-  * 📤 via USB (any format)
-  * ✉️ via Email (EPUB only)
+  * 📤 USB (any supported format)
+  * ✉️ Email (EPUB only)
 
 ---
 
 ## 📦 Requirements
 
 * Python 3.7+
-* [Calibre](https://calibre-ebook.com/download) installed (for `ebook-convert`)
-* `pip install -r requirements.txt`
+* [Calibre](https://calibre-ebook.com/download) installed (with `ebook-convert` accessible)
+
+Install Python dependencies:
 
 ```bash
+pip install -r requirements.txt
+```
+
+**`requirements.txt`** should contain:
+
+```text
 prompt_toolkit
 python-dotenv
 ```
@@ -43,10 +50,10 @@ python-dotenv
 
 ## 🛠️ Setup
 
-1. Install Calibre and locate the path to `ebook-convert.exe` (usually `C:\Program Files\Calibre2\ebook-convert.exe`).
-2. Create a `.env` file in the project root:
+1. Install Calibre and find the path to `ebook-convert.exe` (typically: `C:\Program Files\Calibre2\ebook-convert.exe`)
+2. Create a `.env` file in the project root with the following:
 
-```
+```ini
 EBOOK_CONVERT_PATH=C:\Program Files\Calibre2\ebook-convert.exe
 EMAIL_SENDER=your_email@gmail.com
 EMAIL_PASSWORD=your_app_password
@@ -55,40 +62,42 @@ SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 ```
 
-> ⚠️ Use an **App Password** from Gmail, not your main password. Enable 2FA and generate a password [here](https://myaccount.google.com/apppasswords).
+> ⚠️ Use a Gmail **App Password**, not your main account password. Make sure 2FA is enabled and generate an app password [here](https://myaccount.google.com/apppasswords).
 
 ---
 
-## 🚀 How to Use
+## 🚀 Usage
+
+Run the script:
 
 ```bash
 python kindle_converter.py
 ```
 
-You will be prompted to:
+Then choose one of the options:
 
-1. Convert a PDF (add title, author, cover, format)
-2. Send already converted files via USB
-3. Send EPUB files to your Kindle via email
+1. Convert a PDF (add metadata, choose output format)
+2. Send an already converted file via USB
+3. Send an EPUB file to Kindle via email
 
 ---
 
 ## 📁 Output
 
-* All converted files will be saved to a specified folder
-* A `conversion_log.txt` is created to track your conversions
+* Converted files are saved to a user-specified folder
+* All operations are logged in `conversion_log.txt`
 
 ---
 
-## 🧠 Built With Help From AI
+## 🧠 AI Assistance
 
-This tool was built with some guidance from artificial intelligence for optimizing Python code, writing the README, and formatting output messages.
+Some components were optimized using AI suggestions, including CLI improvements and this README.
 
 ---
 
-## 📢 Contributing / Feedback
+## 🙌 Contributing / Feedback
 
-Feel free to fork or open an issue. Feedback is welcome!
+Feel free to fork this project or open an issue with suggestions or bug reports. Contributions are welcome!
 
 ---
 
