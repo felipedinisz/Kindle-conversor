@@ -10,28 +10,29 @@ When I received my Kindle, I noticed many personal PDFs were poorly formatted, l
 
 This tool solves that:
 
-* Converts PDFs to EPUB or AZW3 with custom metadata and covers
-* Automatically detects your Kindle for USB delivery
-* Supports EPUB email delivery for seamless wireless transfer
+* Converts PDFs to EPUB or AZW3 with custom metadata and covers  
+* Automatically detects your Kindle for USB delivery  
+* Supports EPUB email delivery for seamless wireless transfer  
 
 ---
 
 ## ⚙️ Features
 
-* Convert PDFs to AZW3 or EPUB using Calibre’s `ebook-convert`
-* Add custom title, author, and cover image
-* Automatically logs all conversions
-* Send files to Kindle:
+* Convert PDFs to AZW3 or EPUB using Calibre’s `ebook-convert`  
+* Add custom title, author, and cover image  
+* Automatically logs all conversions  
+* Send files to Kindle:  
 
-  * 📤 USB (any supported format)
-  * ✉️ Email (EPUB only)
+  * 📤 USB (any supported format)  
+  * ✉️ Email (EPUB only)  
 
 ---
 
 ## 📦 Requirements
 
-* Python 3.7+
-* [Calibre](https://calibre-ebook.com/download) installed (with `ebook-convert` accessible)
+* Python 3.7+  
+* [Calibre](https://calibre-ebook.com/download) installed (with `ebook-convert` accessible)  
+* [Ghostscript](https://ghostscript.com/download/) — **optional but recommended** for PDF preprocessing to improve compatibility and reduce file size
 
 Install Python dependencies:
 
@@ -46,12 +47,17 @@ prompt_toolkit
 python-dotenv
 ```
 
+> ⚠️ If Ghostscript is not installed or not found in your system PATH, the PDF cleaning step will be skipped but the conversion will still proceed using the original PDF.  
+>  
+> **Windows users:** Make sure `gswin64c.exe` is accessible from your command line (add Ghostscript’s bin folder to your PATH). You can test by running `gswin64c -h` in your terminal.
+
 ---
 
 ## 🛠️ Setup
 
-1. Install Calibre and find the path to `ebook-convert.exe` (typically: `C:\Program Files\Calibre2\ebook-convert.exe`)
-2. Create a `.env` file in the project root with the following:
+1. Install Calibre and find the path to `ebook-convert.exe` (typically: `C:\Program Files\Calibre2\ebook-convert.exe`)  
+2. Install Ghostscript and add it to your system PATH for PDF preprocessing (optional but recommended)  
+3. Create a `.env` file in the project root with the following:
 
 ```ini
 EBOOK_CONVERT_PATH=C:\Program Files\Calibre2\ebook-convert.exe
@@ -76,16 +82,16 @@ python kindle_converter.py
 
 Then choose one of the options:
 
-1. Convert a PDF (add metadata, choose output format)
-2. Send an already converted file via USB
-3. Send an EPUB file to Kindle via email
+1. Convert a PDF (add metadata, choose output format)  
+2. Send an already converted file via USB  
+3. Send an EPUB file to Kindle via email  
 
 ---
 
 ## 📁 Output
 
-* Converted files are saved to a user-specified folder
-* All operations are logged in `conversion_log.txt`
+* Converted files are saved to a user-specified folder  
+* All operations are logged in `conversion_log.txt`  
 
 ---
 
