@@ -1,91 +1,97 @@
-# Kindle Converter CLI
+# Kindle Converter CLI Tool
 
-A command-line tool to convert PDF files into Kindle-friendly formats (AZW3 or EPUB), add cover images, and send them to your Kindle via USB or email. Ideal for users who want a personalized and organized experience reading documents on Kindle devices.
+A command-line tool built to convert PDF files into Kindle-compatible formats (AZW3 or EPUB), and send them to your Kindle either via USB or email. Ideal for users who want a smooth and organized document library on their Kindle devices.
 
-## Features
+---
 
-* Convert PDFs to **EPUB** (for email sending) or **AZW3** (for USB transfer).
-* Add custom **title**, **author**, and **cover image**.
-* Automatically **detects your Kindle** via USB.
-* Supports sending **EPUB via email** using your own SMTP credentials.
-* Keeps a **conversion log** (`conversion_log.txt`).
+## 📚 Why This Tool?
 
-## Folder Structure
+After receiving a new Kindle, I noticed that many of my personal documents were unformatted, without covers, and in unsupported formats. Sending via USB was also problematic due to changes in how newer Kindle models mount drives.
 
-```
-Kindle-conversor/
-├── converter.py
-├── .env
-├── README.md
-├── requirements.txt
-├── Covers/
-│   └── your_cover.jpg
-├── Books/
-│   └── your_book.pdf
-└── Converted_Books/
-```
+This tool solves those problems:
 
-## Requirements
+* Converts PDFs to EPUB or AZW3 with custom metadata and cover.
+* Automatically detects your Kindle for USB delivery.
+* Supports sending EPUB files directly to your Kindle via email.
 
-* Python 3.8+
-* Calibre installed and its `ebook-convert` path set in your `.env`
-* Google/Gmail account with App Password enabled (for email sending)
+---
 
-## Installation
+## 🔧 Features
+
+* Convert PDFs to AZW3 or EPUB using Calibre's `ebook-convert`
+* Add custom title, author, and cover image
+* Automatically log all conversions
+* Send files to Kindle:
+
+  * 📤 via USB (any format)
+  * ✉️ via Email (EPUB only)
+
+---
+
+## 📦 Requirements
+
+* Python 3.7+
+* [Calibre](https://calibre-ebook.com/download) installed (for `ebook-convert`)
+* `pip install -r requirements.txt`
 
 ```bash
-git clone https://github.com/felipedinisz/Kindle-conversor
-cd Kindle-conversor
-pip install -r requirements.txt
+prompt_toolkit
+python-dotenv
 ```
 
-## Setting Up the `.env` File
+---
 
-Create a `.env` file in the root directory:
+## 🛠️ Setup
 
-```ini
+1. Install Calibre and locate the path to `ebook-convert.exe` (usually `C:\Program Files\Calibre2\ebook-convert.exe`).
+2. Create a `.env` file in the project root:
+
+```
 EBOOK_CONVERT_PATH=C:\Program Files\Calibre2\ebook-convert.exe
-EMAIL_SENDER=your_email@gmail.com
-EMAIL_PASSWORD=your_app_password
-EMAIL_RECIPIENT=your_kindle_address@kindle.com
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
+EMAIL_REMETENTE=your_email@gmail.com
+EMAIL_SENHA=your_app_password
+EMAIL_DESTINO=your_kindle_address@kindle.com
+SMTP_SERVIDOR=smtp.gmail.com
+SMTP_PORTA=587
 ```
 
-> ⚠️ Use [senhas de app](https://support.google.com/mail/answer/185833?hl=pt-BR) se estiver usando Gmail com autenticação de dois fatores. A senha comum **não funcionará**.
+> ⚠️ Use an **App Password** from Gmail, not your main password. Enable 2FA and generate a password [here](https://myaccount.google.com/apppasswords).
 
 ---
 
-## 🚀 Uso
-
-Execute o script principal:
+## 🚀 How to Use
 
 ```bash
-python conversor.py
+python kindle_converter.py
 ```
 
-Você verá um menu com três opções:
+You will be prompted to:
 
-### 1. 📘 Converter PDF para EPUB ou AZW3
-
-Você poderá inserir os dados do livro (PDF, capa, título, autor), escolher o formato de saída e salvá-lo em uma pasta definida. Não é necessário conectar o Kindle nesta etapa.
-
-### 2. Send to Kindle via USB
-
-Choose option **2**, and if your Kindle is connected, the tool will send the file.
-
-### 3. Send to Kindle via Email (EPUB only)
-
-Choose option **3** and your EPUB file will be sent to your Kindle address.
-
-## AI Contribution
-
-Some parts of this project (especially the README, code optimization, and output formatting) were assisted by AI tools to accelerate development and documentation.
-
-## License
-
-MIT
+1. Convert a PDF (add title, author, cover, format)
+2. Send already converted files via USB
+3. Send EPUB files to your Kindle via email
 
 ---
 
-Created by Felipe Diniz
+## 📁 Output
+
+* All converted files will be saved to a specified folder
+* A `conversion_log.txt` is created to track your conversions
+
+---
+
+## 🧠 Built With Help From AI
+
+This tool was built with some guidance from artificial intelligence for optimizing Python code, writing the README, and formatting output messages.
+
+---
+
+## 📢 Contributing / Feedback
+
+Feel free to fork or open an issue. Feedback is welcome!
+
+---
+
+## 🔗 Repository
+
+[https://github.com/felipedinisz/Kindle-conversor](https://github.com/felipedinisz/Kindle-conversor)
