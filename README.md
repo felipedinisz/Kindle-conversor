@@ -48,11 +48,11 @@ python-dotenv
 
 ```
 EBOOK_CONVERT_PATH=C:\Program Files\Calibre2\ebook-convert.exe
-EMAIL_REMETENTE=your_email@gmail.com
-EMAIL_SENHA=your_app_password
-EMAIL_DESTINO=your_kindle_address@kindle.com
-SMTP_SERVIDOR=smtp.gmail.com
-SMTP_PORTA=587
+EMAIL_SENDER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+EMAIL_RECIPIENT=your_kindle_address@kindle.com
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
 ```
 
 > ⚠️ Use an **App Password** from Gmail, not your main password. Enable 2FA and generate a password [here](https://myaccount.google.com/apppasswords).
