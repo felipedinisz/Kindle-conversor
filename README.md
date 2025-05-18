@@ -1,62 +1,55 @@
-# 📚 Conversor de Livros para Kindle (PDF → EPUB/AZW3)
+# Kindle Converter CLI
 
-Este projeto é um utilitário de linha de comando (CLI) em Python que permite converter arquivos PDF para os formatos **EPUB** (recomendado para envio por e-mail ao Kindle) ou **AZW3** (ideal para uso local ou envio por USB). Ele também permite o envio direto dos arquivos convertidos para o Kindle via **USB** ou **e-mail**, de acordo com os padrões da Amazon.
+A command-line tool to convert PDF files into Kindle-friendly formats (AZW3 or EPUB), add cover images, and send them to your Kindle via USB or email. Ideal for users who want a personalized and organized experience reading documents on Kindle devices.
 
-## ✨ Funcionalidades
+## Features
 
-- Conversão de arquivos PDF para **EPUB** ou **AZW3**, com capa, título e autor personalizados.
-- Envio automático para o Kindle via **conexão USB** (qualquer formato).
-- Envio automático para o Kindle via **e-mail** (formato EPUB apenas).
-- Interface interativa e completadores de caminho via terminal.
-- Registro automático de conversões no `log_conversao.txt`.
+* Convert PDFs to **EPUB** (for email sending) or **AZW3** (for USB transfer).
+* Add custom **title**, **author**, and **cover image**.
+* Automatically **detects your Kindle** via USB.
+* Supports sending **EPUB via email** using your own SMTP credentials.
+* Keeps a **conversion log** (`conversion_log.txt`).
 
----
+## Folder Structure
 
-## 🧰 Pré-requisitos
-
-- Python 3.10 ou superior.
-- [Calibre](https://calibre-ebook.com/download) instalado (para usar o `ebook-convert`).
-- Conta Amazon com endereço Kindle configurado e autorizado a receber e-mails.
-- Acesso ao seu e-mail com senha de app (Gmail, Outlook, etc.).
-
----
-
-## 🔧 Instalação
-
-1. Clone este repositório:
-
-```bash
-git clone https://github.com/seunome/conversor-kindle.git
-cd conversor-kindle
+```
+Kindle-conversor/
+├── converter.py
+├── .env
+├── README.md
+├── requirements.txt
+├── Covers/
+│   └── your_cover.jpg
+├── Books/
+│   └── your_book.pdf
+└── Converted_Books/
 ```
 
-2. Crie um ambiente virtual (opcional, mas recomendado):
+## Requirements
+
+* Python 3.8+
+* Calibre installed and its `ebook-convert` path set in your `.env`
+* Google/Gmail account with App Password enabled (for email sending)
+
+## Installation
 
 ```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
-```
-
-3. Instale as dependências:
-
-```bash
+git clone https://github.com/felipedinisz/Kindle-conversor
+cd Kindle-conversor
 pip install -r requirements.txt
 ```
 
----
+## Setting Up the `.env` File
 
-## ⚙️ Configuração do `.env`
+Create a `.env` file in the root directory:
 
-Crie um arquivo `.env` na raiz com as seguintes variáveis:
-
-```env
+```ini
 EBOOK_CONVERT_PATH=C:\Program Files\Calibre2\ebook-convert.exe
-EMAIL_REMETENTE=seuemail@gmail.com
-EMAIL_SENHA=sua_senha_de_app
-EMAIL_DESTINO=seudestino@kindle.com
-SMTP_SERVIDOR=smtp.gmail.com
-SMTP_PORTA=587
+EMAIL_SENDER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+EMAIL_RECIPIENT=your_kindle_address@kindle.com
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
 ```
 
 > ⚠️ Use [senhas de app](https://support.google.com/mail/answer/185833?hl=pt-BR) se estiver usando Gmail com autenticação de dois fatores. A senha comum **não funcionará**.
@@ -68,7 +61,7 @@ SMTP_PORTA=587
 Execute o script principal:
 
 ```bash
-python script.py
+python conversor.py
 ```
 
 Você verá um menu com três opções:
@@ -77,43 +70,22 @@ Você verá um menu com três opções:
 
 Você poderá inserir os dados do livro (PDF, capa, título, autor), escolher o formato de saída e salvá-lo em uma pasta definida. Não é necessário conectar o Kindle nesta etapa.
 
-### 2. 📤 Enviar arquivos para o Kindle via USB
+### 2. Send to Kindle via USB
 
-Se o Kindle estiver conectado como unidade USB, o script detecta automaticamente e permite o envio dos arquivos **AZW3, EPUB, MOBI ou PDF** diretamente.
+Choose option **2**, and if your Kindle is connected, the tool will send the file.
 
-### 3. ✉️ Enviar arquivos EPUB para o Kindle via e-mail
+### 3. Send to Kindle via Email (EPUB only)
 
-O script enviará os arquivos para o endereço Kindle informado no `.env`. Apenas o formato **EPUB** é aceito por e-mail.
+Choose option **3** and your EPUB file will be sent to your Kindle address.
 
-> Os envios por e-mail são feitos com autenticação SMTP segura e exibem mensagens claras em caso de erro.
+## AI Contribution
 
----
+Some parts of this project (especially the README, code optimization, and output formatting) were assisted by AI tools to accelerate development and documentation.
 
-## 📓 Log de Conversões
+## License
 
-Todas as conversões são registradas em `log_conversao.txt` com:
-
-- Título do livro
-- Autor
-- Caminho do arquivo
-- Data e hora
+MIT
 
 ---
 
-
-### Posso enviar AZW3 por e-mail ao Kindle?
-
-**Não.** A Amazon atualmente só aceita os seguintes formatos por e-mail:  
-✔️ EPUB, PDF, DOCX  
-❌ MOBI, AZW3
-
-### O Kindle precisa estar conectado via cabo?
-
-Apenas para a opção 2 (envio por USB). As demais funcionam com o dispositivo offline.
-
----
-
-
-
-
-
+Created by Felipe Diniz
