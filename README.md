@@ -68,7 +68,7 @@ SMTP_PORTA=587
 Execute o script principal:
 
 ```bash
-python conversor.py
+python script.py
 ```
 
 Você verá um menu com três opções:
