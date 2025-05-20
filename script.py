@@ -22,8 +22,11 @@ LOG_FILE = "conversion_log.txt"
 def sanitize_pdf(input_pdf):
     print("\U0001F9FC Preprocessing PDF with Ghostscript...")
     output_pdf = os.path.splitext(input_pdf)[0] + "_cleaned.pdf"
+    
+    gs_path = os.getenv("GHOSTSCRIPT_PATH", "gswin64c" if os.name == 'nt' else "gs")
+
     gs_cmd = [
-        "gswin64c" if os.name == 'nt' else "gs",
+        gs_path,
         "-sDEVICE=pdfwrite",
         "-dCompatibilityLevel=1.4",
         "-dPDFSETTINGS=/screen",
@@ -33,6 +36,7 @@ def sanitize_pdf(input_pdf):
         f"-sOutputFile={output_pdf}",
         input_pdf
     ]
+
     try:
         subprocess.run(gs_cmd, check=True)
         return output_pdf
