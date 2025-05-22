@@ -15,18 +15,20 @@ EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECIPIENT = os.getenv("EMAIL_RECIPIENT")
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+GHOSTSCRIPT_PATH = os.getenv("GHOSTSCRIPT_PATH", "gswin64c" if os.name == 'nt' else "gs")
 
 LOG_FILE = "conversion_log.txt"
 
+def sanitize_pdf(input_pdf, use_ghostscript):
+    if not use_ghostscript:
+        print("⏭️ Skipping PDF preprocessing as requested.")
+        return input_pdf
 
-def sanitize_pdf(input_pdf):
     print("\U0001F9FC Preprocessing PDF with Ghostscript...")
     output_pdf = os.path.splitext(input_pdf)[0] + "_cleaned.pdf"
-    
-    gs_path = os.getenv("GHOSTSCRIPT_PATH", "gswin64c" if os.name == 'nt' else "gs")
 
     gs_cmd = [
-        gs_path,
+        GHOSTSCRIPT_PATH,
         "-sDEVICE=pdfwrite",
         "-dCompatibilityLevel=1.4",
         "-dPDFSETTINGS=/screen",
@@ -47,10 +49,9 @@ def sanitize_pdf(input_pdf):
         print("\n❌ Ghostscript preprocessing failed. Proceeding with original PDF.")
         return input_pdf
 
-
-def convert_pdf(input_pdf, cover, title, author, output_dir, fmt):
+def convert_pdf(input_pdf, cover, title, author, output_dir, fmt, use_ghostscript):
     os.makedirs(output_dir, exist_ok=True)
-    cleaned_pdf = sanitize_pdf(input_pdf)
+    cleaned_pdf = sanitize_pdf(input_pdf, use_ghostscript)
     output_file = os.path.join(output_dir, f"{title}.{fmt}")
 
     cmd = [
@@ -70,8 +71,7 @@ def convert_pdf(input_pdf, cover, title, author, output_dir, fmt):
         print("\n❌ Conversion failed:", e)
         return None
 
-
-def send_to_kindle_usb(filepath):
+def send_to_kindle_usb(filepaths):
     print("\n🔍 Looking for Kindle device...")
     possible_drives = [f"{chr(d)}:/" for d in range(65, 91) if os.path.exists(f"{chr(d)}:/documents")]
     if not possible_drives:
@@ -79,76 +79,84 @@ def send_to_kindle_usb(filepath):
         return
 
     kindle_path = os.path.join(possible_drives[0], "documents")
-    try:
-        shutil.copy(filepath, kindle_path)
-        print(f"✅ Sent to Kindle via USB: {filepath}")
-    except Exception as e:
-        print("❌ Error sending via USB:", e)
+    for filepath in filepaths:
+        try:
+            shutil.copy(filepath, kindle_path)
+            print(f"✅ Sent to Kindle via USB: {filepath}")
+        except Exception as e:
+            print("❌ Error sending via USB:", e)
 
+def send_to_kindle_email(filepaths):
+    for filepath in filepaths:
+        if not filepath.lower().endswith(".epub"):
+            print(f"❌ File must be EPUB: {filepath}")
+            continue
 
-def send_to_kindle_email(filepath):
-    if not filepath.lower().endswith(".epub"):
-        print("❌ Only EPUB files can be sent via email.")
-        return
+        msg = EmailMessage()
+        msg['Subject'] = 'Kindle Book Delivery'
+        msg['From'] = EMAIL_SENDER
+        msg['To'] = EMAIL_RECIPIENT
 
-    msg = EmailMessage()
-    msg['Subject'] = 'Kindle Book Delivery'
-    msg['From'] = EMAIL_SENDER
-    msg['To'] = EMAIL_RECIPIENT
+        with open(filepath, 'rb') as f:
+            file_data = f.read()
+            file_name = os.path.basename(filepath)
+            msg.add_attachment(file_data, maintype='application', subtype='epub+zip', filename=file_name)
 
-    with open(filepath, 'rb') as f:
-        file_data = f.read()
-        file_name = os.path.basename(filepath)
-        msg.add_attachment(file_data, maintype='application', subtype='epub+zip', filename=file_name)
+        try:
+            print(f"\n✉️ Sending '{file_name}' via email...")
+            with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp:
+                smtp.starttls()
+                smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+                smtp.send_message(msg)
+            print("✅ Sent to Kindle via email!")
+        except Exception as e:
+            print("❌ Email sending failed:", e)
 
-    try:
-        print("\n✉️ Sending email...")
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp:
-            smtp.starttls()
-            smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
-            smtp.send_message(msg)
-        print("✅ Sent to Kindle via email!")
-    except Exception as e:
-        print("❌ Email sending failed:", e)
+def main_menu():
+    while True:
+        print("\n=== eBook Converter for Kindle ===")
+        print("0 - Exit")
+        print("1 - Convert PDF to eBook")
+        print("2 - Send file(s) to Kindle via USB")
+        print("3 - Send file(s) to Kindle via Email (EPUB only)")
+        choice = input("> ")
 
+        if choice == "0":
+            print("👋 Bye!")
+            break
 
-def main():
-    print("=== eBook Converter for Kindle (EPUB/AZW3) ===\n")
-    print("Choose an option:")
-    print("1 - Convert PDF")
-    print("2 - Send ready file to Kindle (USB)")
-    print("3 - Send ready file to Kindle (Email/EPUB only)")
-    choice = input("> ")
+        elif choice == "1":
+            n = int(input("How many books to convert? "))
+            output_dir = prompt("\n📁 Output folder: ", completer=PathCompleter()) or "Converted_Books"
 
-    if choice == "1":
-        n = int(input("How many books to convert? "))
-        output_dir = prompt("\n📁 Output folder: ", completer=PathCompleter()) or "Converted_Books"
+            with open(LOG_FILE, "a", encoding="utf-8") as log:
+                for i in range(1, n + 1):
+                    print(f"\n=== Book {i} of {n} ===")
+                    pdf_path = prompt("📄 PDF file: ", completer=PathCompleter())
+                    cover_path = prompt("🖼️  Cover image: ", completer=PathCompleter())
+                    title = input("📘 Title: ")
+                    author = input("✍️  Author: ")
+                    fmt = input("Output format (azw3/epub): ").lower()
 
-        with open(LOG_FILE, "a", encoding="utf-8") as log:
-            for i in range(1, n + 1):
-                print(f"\n=== Book {i} of {n} ===")
-                pdf_path = prompt("📄 PDF file: ", completer=PathCompleter())
-                cover_path = prompt("🖼️  Cover image: ", completer=PathCompleter())
-                title = input("📘 Title: ")
-                author = input("✍️  Author: ")
-                fmt = input("Output format (azw3/epub): ").lower()
+                    use_gs = input("Use Ghostscript to clean PDF before conversion? (y/n): ").strip().lower()
+                    use_ghostscript = (use_gs == 'y')
 
-                result = convert_pdf(pdf_path, cover_path, title, author, output_dir, fmt)
+                    result = convert_pdf(pdf_path, cover_path, title, author, output_dir, fmt, use_ghostscript)
+                    if result:
+                        log.write(f"{title} | {author} | {result}\n")
 
-                if result:
-                    log.write(f"{title} | {author} | {result}\n")
+        elif choice == "2":
+            n = int(input("How many files to send via USB? "))
+            files = [prompt(f"📄 File {i+1}: ", completer=PathCompleter()) for i in range(n)]
+            send_to_kindle_usb(files)
 
-    elif choice == "2":
-        file_path = prompt("\n📄 File to send via USB: ", completer=PathCompleter())
-        send_to_kindle_usb(file_path)
+        elif choice == "3":
+            n = int(input("How many EPUB files to send via Email? "))
+            files = [prompt(f"📄 EPUB {i+1}: ", completer=PathCompleter()) for i in range(n)]
+            send_to_kindle_email(files)
 
-    elif choice == "3":
-        file_path = prompt("\n📄 EPUB file to send via email: ", completer=PathCompleter())
-        send_to_kindle_email(file_path)
-
-    else:
-        print("Invalid option.")
-
+        else:
+            print("❌ Invalid option. Try again.")
 
 if __name__ == "__main__":
-    main()
+    main_menu()
